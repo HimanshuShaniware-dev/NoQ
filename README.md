@@ -57,11 +57,13 @@ All without visiting a physical recharge centre.
 - CSS  
 - JavaScript  
 
-**Backend (Planned/Future Integration)**
-- MySQL Database  
-- Payment Gateway Integration  
-- Transport Authority Server Integration  
+## Backend
+- Python (Flask)  
+- Custom backend logic using `backend.py`  
 
+## Database
+- SQL (Dummy database)  
+- `init_db.sql` for initialization
 ---
 
 # 🔄 System Workflow
