@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoQ Login</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Segoe UI', Arial;
+background:linear-gradient(180deg,#0f1f3f,#243b6b);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+}
+
+.container{
+width:340px;
+text-align:center;
+}
+
+/* CARD IMAGE ABOVE NOQ */
+.login-img{
+display:flex;
+justify-content:center;
+margin-bottom:18px;
+}
+
+.login-img img{
+width:170px;
+opacity:.95;
+animation:float 3s ease-in-out infinite;
+}
+
+/* floating animation */
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-8px);}
+100%{transform:translateY(0);}
+}
+
+.logo{
+font-size:36px;
+font-weight:700;
+margin-bottom:30px;
+letter-spacing:1px;
+}
+
+.card{
+background:rgba(255,255,255,0.08);
+padding:30px;
+border-radius:18px;
+backdrop-filter:blur(12px);
+}
+
+input{
+width:100%;
+padding:14px;
+margin:12px 0;
+border-radius:10px;
+border:none;
+outline:none;
+font-size:15px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+background:white;
+color:#1e3a6d;
+font-weight:600;
+font-size:15px;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-2px);
+}
+
+.otp-box{
+display:none;
+margin-top:10px;
+}
+
+.otp-container{
+display:flex;
+justify-content:center;
+gap:8px;
+margin:15px 0;
+}
+
+.otp{
+width:42px;
+height:48px;
+text-align:center;
+font-size:18px;
+border-radius:8px;
+border:none;
+}
+
+.note{
+font-size:13px;
+color:#cbd3ff;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="login-img">
+<img src="logincard.png">
+</div>
+
+
+
+<div class="card">
+
+<!-- MOBILE LOGIN -->
+<div id="mobileSection">
+<h3>Login with registered mobile number</h3>
+<input type="tel" id="mobile" placeholder="Enter mobile number" maxlength="10">
+<button onclick="sendOTP()">Continue</button>
+<p class="note">OTP will be sent to your registered number</p>
+</div>
+
+<!-- OTP SECTION -->
+<div class="otp-box" id="otpSection">
+<h3>Enter OTP</h3>
+
+<div class="otp-container">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+<input class="otp" maxlength="1">
+</div>
+
+<button onclick="verifyOTP()">Verify & Login</button>
+<p class="note">Demo OTP: 123456</p>
+</div>
+
+</div>
+</div>
+
+<script>
+const demoMobile="9876543210";
+const demoOTP="123456";
+
+function sendOTP(){
+let mobile=document.getElementById("mobile").value;
+
+if(mobile.length!==10){
+alert("Enter valid 10-digit mobile number");
+return;
+}
+
+if(mobile!==demoMobile){
+alert("Mobile not registered (use 9876543210 for demo)");
+return;
+}
+
+alert("OTP sent successfully");
+
+document.getElementById("mobileSection").style.display="none";
+document.getElementById("otpSection").style.display="block";
+}
+
+function verifyOTP(){
+let inputs=document.querySelectorAll(".otp");
+let entered="";
+inputs.forEach(i=>entered+=i.value);
+
+if(entered===demoOTP){
+alert("Login Successful");
+window.location.href="discontinuation.html";
+}else{
+alert("Invalid OTP");
+}
+}
+
+/* auto move otp */
+document.addEventListener("input",function(e){
+if(e.target.classList.contains("otp")){
+if(e.target.value.length==1){
+let next=e.target.nextElementSibling;
+if(next) next.focus();
+}
+}
+});
+</script>
+
+</body>
+</html>
