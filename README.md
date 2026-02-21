@@ -78,22 +78,6 @@ All without visiting a physical recharge centre.
 
 ---
 
-# 📸 Project Screenshots
-
-## 🔐 Login Page
-![Login](login.png)
-
-## 🏠 Dashboard
-![Homepage](homepage.png)
-
-## 💳 Top-Up Interface
-![Topup](topup.png)
-
-## 🚫 Discontinuation Page
-![Discontinue](discontinuation.png)
-
----
-
 # ▶️ How to Run the Project
 1. Clone this repository  
 2. Open the project folder  
