@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoQ</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+font-family:'Segoe UI', Arial;
+background:linear-gradient(180deg,#0f1f3f,#243b6b);
+height:100vh;overflow:hidden;
+display:flex;justify-content:center;align-items:center;
+color:white;
+}
+
+.phone{width:360px;height:100vh;position:relative;overflow:hidden;}
+
+.app-name{position:absolute;top:25px;left:25px;font-size:24px;font-weight:600;}
+
+.profile-icon{
+position:absolute;top:22px;right:25px;width:42px;height:42px;border-radius:50%;
+background:rgba(255,255,255,0.12);display:flex;justify-content:center;align-items:center;cursor:pointer;
+}
+
+/* SIDEBAR */
+.sidebar{
+position:fixed;top:0;right:-320px;width:280px;height:100%;
+background:linear-gradient(180deg,#0c1a36,#162a55);
+padding:25px;transition:.4s;z-index:999;
+}
+.sidebar.active{right:0;}
+
+.close-btn{position:absolute;top:18px;right:18px;cursor:pointer;}
+.close-btn svg line{stroke:white;}
+
+.user-box{margin-top:70px;}
+.user-box p{color:#cbd3ff;margin:6px 0;}
+
+.signout{
+position:absolute;bottom:30px;left:25px;width:230px;padding:14px;
+border:none;border-radius:10px;background:rgba(255,255,255,0.1);color:white;
+}
+
+/* CONTENT */
+.content{margin-top:120px;text-align:center;}
+
+.card-container{position:relative;width:85%;margin:auto;}
+.card-container img{width:100%;border-radius:18px;}
+
+.card-number{
+position:absolute;bottom:48%;left:50%;
+transform:translateX(-50%);
+font-size:11px;letter-spacing:3px;font-weight:600;
+}
+
+.trips{margin-top:45px;}
+.trips .big{font-size:46px;font-weight:700;}
+.trips .small{font-size:16px;color:#cfd8ff;}
+
+.btn{
+width:85%;margin:18px auto;padding:16px;border-radius:14px;
+background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
+font-weight:600;cursor:pointer;transition:.3s;
+}
+.btn:hover{background:white;color:#1e3a6d;}
+
+/* MODALS */
+.modal{
+position:fixed;bottom:-100%;left:0;width:100%;height:65%;
+background:white;color:black;border-radius:25px 25px 0 0;
+padding:25px;transition:.4s;
+}
+.modal.active{bottom:0;}
+
+.modal select,.modal input{
+width:100%;padding:12px;margin:10px 0;border-radius:8px;border:1px solid #ccc;
+}
+
+.modal button{
+width:100%;padding:14px;margin-top:10px;border:none;border-radius:10px;
+background:#1e3a6d;color:white;font-weight:600;cursor:pointer;
+}
+
+.receipt{
+display:none;margin-top:15px;background:#f5f7ff;padding:15px;border-radius:10px;font-size:14px;
+}
+
+.otp{
+width:42px;height:48px;text-align:center;font-size:18px;border-radius:8px;border:1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+<div class="app-name">NoQ</div>
+
+<div class="profile-icon" onclick="toggleSidebar()">≡</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+<div class="close-btn" onclick="toggleSidebar()">
+<svg width="22" height="22"><line x1="6" y1="6" x2="18" y2="18" stroke-width="2"/><line x1="18" y1="6" x2="6" y2="18" stroke-width="2"/></svg>
+</div>
+
+<div class="user-box">
+<h3>Piyush Mahalle</h3>
+<p>Student Pass</p>
+<p>9876543210</p>
+</div>
+
+<button class="signout">Sign Out</button>
+</div>
+
+<!-- MAIN -->
+<div class="content">
+<div class="card-container">
+<img src="card.jpeg">
+<div class="card-number">1234 5678 9012 345</div>
+</div>
+
+<div class="trips">
+<span class="big" id="remainingTrips">36</span>
+<span class="small"> / 60 trips remaining</span>
+</div>
+
+<div class="btn" onclick="openTopup()">Top-Up Pass</div>
+<div class="btn" onclick="openDis()">Discontinue Card</div>
+</div>
+
+<!-- TOPUP MODAL -->
+<div class="modal" id="topupModal">
+<h3>Card Top-Up</h3>
+
+<label>Select Plan</label>
+<select id="plan">
+<option value="60">1 Month (60 trips)</option>
+<option value="180">3 Months (180 trips)</option>
+</select>
+
+<label>Activation Code (4 digits)</label>
+<input type="password" maxlength="4" id="code" placeholder="Enter 4-digit code">
+
+<button onclick="generateReceipt()">Proceed to Payment</button>
+<button onclick="closeTopup()" style="background:#ccc;color:black;">Cancel</button>
+
+<div class="receipt" id="receiptBox"></div>
+</div>
+
+<!-- DISCONTINUE MODAL -->
+<div class="modal" id="disModal">
+<h3>Discontinue Card</h3>
+
+<p style="font-size:14px;margin-top:10px;">
+Are you sure you want to discontinue this card?<br><br>
+Once discontinued, this card will be permanently deactivated and cannot be used again.
+</p>
+
+<button onclick="sendOTP()">Yes, Continue</button>
+<button onclick="closeDis()" style="background:#ccc;color:black;">Cancel</button>
+
+<div id="otpSection" style="display:none;margin-top:20px;text-align:center;">
+<p>Enter 6-digit OTP sent to registered mobile number</p>
+
+<div style="display:flex;justify-content:center;gap:8px;margin:15px 0;">
+<input class="otp" maxlength="1"><input class="otp" maxlength="1"><input class="otp" maxlength="1">
+<input class="otp" maxlength="1"><input class="otp" maxlength="1"><input class="otp" maxlength="1">
+</div>
+
+<button onclick="verifyOTP()">Verify & Discontinue</button>
+</div>
+</div>
+
+</div>
+
+<script>
+let remaining=36;
+const correctCode="4582";
+const farePerTrip=30;
+const discount=0.44;
+
+/* sidebar */
+function toggleSidebar(){document.getElementById("sidebar").classList.toggle("active");}
+
+/* topup */
+function openTopup(){document.getElementById("topupModal").classList.add("active");}
+function closeTopup(){
+document.getElementById("topupModal").classList.remove("active");
+document.getElementById("receiptBox").style.display="none";
+}
+
+function generateReceipt(){
+let code=document.getElementById("code").value;
+let trips=parseInt(document.getElementById("plan").value);
+
+if(code.length!==4){alert("Activation code must be 4 digits");return;}
+if(code!==correctCode){alert("Invalid activation code");return;}
+
+let base=trips*farePerTrip;
+let discountAmt=base*discount;
+let total=base-discountAmt;
+let duration=(trips==60)?"1 Month":"3 Months";
+
+let receipt=`
+<b>Payment Receipt</b><br><br>
+Topup Duration: ${duration}<br>
+Topup Amount: ₹${base.toFixed(2)}<br>
+Discount Applied (Student 44%): -₹${discountAmt.toFixed(2)}<br>
+<hr>
+<b>Total Amount to Pay: ₹${total.toFixed(2)}</b>
+<br><br>
+<button onclick="confirmPayment(${trips})">Pay Now</button>
+`;
+
+let box=document.getElementById("receiptBox");
+box.innerHTML=receipt;
+box.style.display="block";
+}
+
+function confirmPayment(trips){
+remaining+=trips;
+document.getElementById("remainingTrips").innerText=remaining;
+alert("Payment Successful & Pass Activated");
+closeTopup();
+}
+
+/* discontinue */
+function openDis(){document.getElementById("disModal").classList.add("active");}
+function closeDis(){
+document.getElementById("disModal").classList.remove("active");
+document.getElementById("otpSection").style.display="none";
+}
+
+function sendOTP(){
+alert("OTP sent to registered mobile number");
+document.getElementById("otpSection").style.display="block";
+}
+
+function verifyOTP(){
+let otpInputs=document.querySelectorAll(".otp");
+let entered="";
+otpInputs.forEach(i=>entered+=i.value);
+
+if(entered==="123456"){
+alert("Card Successfully Discontinued");
+closeDis();
+}else{
+alert("Invalid OTP");
+}
+}
+
+/* otp auto move */
+document.addEventListener("input",function(e){
+if(e.target.classList.contains("otp")){
+if(e.target.value.length==1){
+let next=e.target.nextElementSibling;
+if(next) next.focus();
+}
+}
+});
+</script>
+
+</body>
+</html>
